@@ -52,7 +52,7 @@ st.sidebar.header("➕ Add New Expense")
 
 #These are the input fields for adding a new expense. The user can enter the amount, category, and description of the expense.  
 
-amount = st.sidebar.number_input("Amount ($)", min_value=0.01, step=0.01)
+amount = st.sidebar.number_input("Amount (LKR)", min_value=0.01, step=0.01)
 category = st.sidebar.selectbox("Category", [
     "Food","Education", "Transport", "Entertainment",
     "Health", "Shopping", "Bills", "Other"
