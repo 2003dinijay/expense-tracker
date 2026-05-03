@@ -35,7 +35,7 @@ def get_expenses():
 # POST /expenses → adds a new expense
 # The request body must match ExpenseInput shape
 @app.post("/expenses")
-def add_expense(expense: ExpenseInput):
+def add_expense(expense: ExpensesInput):
     new = storage.add_expense(
         amount=expense.amount,
         category=expense.category,
