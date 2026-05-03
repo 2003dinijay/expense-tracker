@@ -1,7 +1,24 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from numpy import exp
 from pydantic import BaseModel
 import storage
+import google.generativeai as genai
+from dotenv import load_dotenv
+import os
+
+# Load environment variables
+load_dotenv()
+# Initialize Gemini client with API key from environment variable
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))  
+
+
+#create gemini model instance
+model = genai.GenerativeModel("gemini-1.5-flash")
+
+
+
+
 
 #creating fastapi app instance
 
@@ -71,3 +88,50 @@ def get_summary():
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+# NEW — AI ANALYSIS ENDPOINT
+
+@app.get("/analyze")
+def analyze_expenses():
+    expenses =storage.load_expenses()
+
+    if not expenses:
+        raise HTTPException(status_code=400, detail="No expenses to analyze")           
+    
+    #build a summery of spending by category to send to gemini
+    summary = {}
+    total = 0
+    for expense in expenses:
+        cat=exp["category"]
+        if cat not in summary:
+            summary[cat] = 0
+        summary[cat] += expense["amount"]
+        total += exp["amount"]
+
+    #format the data as readable text for ai
+    summary_text= "Here is a summary of my expenses:\n"
+
+
+# This is the prompt we send to Gemini
+    # We give it our expense data and ask for specific advice
+    prompt = f"""
+    You are a helpful personal finance assistant.
+    
+    Here is a summary of my recent expenses (total: ${total:.2f}):
+    {summary_text}
+    
+    Please do the following:
+    1. Give a brief analysis of my spending pattern (2-3 sentences)
+    2. Point out the top 2 areas where I'm spending the most
+    3. Give 3 specific, practical tips to help me save money based on these categories
+    4. Give my spending an overall score out of 10 and explain why
+    
+    Keep the response friendly, concise and actionable.
+    """
+
+     # Send the prompt to Gemini and get the response
+    response = model.generate_content(prompt)
+
+    # Return the AI's text response
+    return {"analysis": response.text}

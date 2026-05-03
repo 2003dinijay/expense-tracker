@@ -28,6 +28,11 @@ def delete_expense(expense_id):
     return res.json() #returns dict like {"message": "Deleted successfully"} if deletion was successful, or an error message if not
 
 
+def get_summary():
+    #send a GET request to the /summery endpoint to get the summary of expenses by category
+    res = requests.get(f"{API_URL}/summery")
+    return res.json() #returns a dict like {"Food": 150.0, "Transport": 75.0, ...}  
+
 #PAGE CONFIG
 
 
