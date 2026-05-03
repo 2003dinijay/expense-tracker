@@ -103,15 +103,16 @@ def analyze_expenses():
     summary = {}
     total = 0
     for expense in expenses:
-        cat=exp["category"]
+        cat = expense["category"]
         if cat not in summary:
             summary[cat] = 0
         summary[cat] += expense["amount"]
-        total += exp["amount"]
+        total += expense["amount"]
 
     #format the data as readable text for ai
     summary_text= "Here is a summary of my expenses:\n"
-
+    for cat, amount in summary.items():
+        summary_text += f"- {cat}: ${amount:.2f}\n"
 
 # This is the prompt we send to Gemini
     # We give it our expense data and ask for specific advice
