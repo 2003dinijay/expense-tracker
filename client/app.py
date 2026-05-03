@@ -34,8 +34,8 @@ def get_summary():
     return res.json() #returns a dict like {"Food": 150.0, "Transport": 75.0, ...}  
 
 def get_ai_analysis():
-    #send a GET request to the /ai-analysis endpoint to get the AI spending analysis
-    res = requests.get(f"{API_URL}/ai-analysis")
+    #send a GET request to the /analyze endpoint to get the AI spending analysis
+    res = requests.get(f"{API_URL}/analyze")
     if res.status_code == 200:
         return res.json().get("analysis"), None
     return None, res.text
