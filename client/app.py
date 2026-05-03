@@ -78,7 +78,7 @@ with col1:
             # Show each expense with a delete button next to it
             c1, c2 = st.columns([4, 1])
             with c1:
-                st.write(f"**{exp['category']}** — ${exp['amount']:.2f} — {exp['description']} *(_{exp['date']}_)*")
+                st.write(f"**{exp['category']}** — LKR{exp['amount']:.2f} — {exp['description']} *(_{exp['date']}_)*")
             with c2:
                 if st.button("🗑️", key=f"del_{exp['id']}"):
                     delete_expense(exp["id"])
@@ -105,7 +105,22 @@ with col2:
 
 
 
-# AI ANALYSIS SECTION — Step 4 (coming next)
-
 st.divider()
 st.subheader("🤖 AI Spending Analysis")
+
+# Only show the button if there are expenses to analyze
+expenses = get_expenses()
+if not expenses:
+    st.info("Add some expenses first, then come back here for AI analysis!")
+else:
+    if st.button("✨ Analyze My Spending with AI", type="primary"):
+        # Show a spinner while waiting for the AI response
+        with st.spinner("Gemini is analyzing your expenses..."):
+            analysis, error = get_ai_analysis()
+
+        if error:
+            st.error(f"Error: {error}")
+        else:
+            # Display the AI response in a nice box
+            st.success("Analysis complete!")
+            st.markdown(analysis)
